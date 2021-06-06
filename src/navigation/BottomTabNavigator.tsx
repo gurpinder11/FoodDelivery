@@ -1,40 +1,51 @@
-/**
- * Learn more about createBottomTabNavigator:
- * https://reactnavigation.org/docs/bottom-tab-navigator
- */
-
 import {Ionicons} from "@expo/vector-icons";
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
 import {createStackNavigator} from "@react-navigation/stack";
-import * as React from "react";
+import React, {useContext} from "react";
 
 import Colors from "../constants/Colors";
 import useColorScheme from "../hooks/useColorScheme";
-import TabOneScreen from "../screens/TabOneScreen";
-import TabTwoScreen from "../screens/TabTwoScreen";
-import {BottomTabParamList, TabOneParamList, TabTwoParamList} from "../types";
+import RouteScreen from "../screens/RouteScreen";
+import SupportScreen from "../screens/SupportScreen";
+import ProfileScreen from "../screens/ProfileScreen";
+import {BottomTabParamList, RouteTabParamList, ProfileTabParamList} from "../types";
+import {UserContext} from "../context/UserContext";
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
+const deliveryPerson = "DELIVERY_PERSON";
 
 export default function BottomTabNavigator() {
+  const [user] = useContext(UserContext);
   const colorScheme = useColorScheme();
 
   return (
     <BottomTab.Navigator
-      initialRouteName="TabOne"
+      initialRouteName="RouteTab"
       tabBarOptions={{activeTintColor: Colors[colorScheme].tint}}
     >
+      {user.type === deliveryPerson && (
+        <BottomTab.Screen
+          name="RouteTab"
+          component={RouteTabNavigator}
+          options={{
+            title: "Route",
+            tabBarIcon: ({color}) => <TabBarIcon name="ios-code" color={color} />,
+          }}
+        />
+      )}
       <BottomTab.Screen
-        name="TabOne"
-        component={TabOneNavigator}
+        name="SupportTab"
+        component={SupportTabNavigator}
         options={{
+          title: "Support",
           tabBarIcon: ({color}) => <TabBarIcon name="ios-code" color={color} />,
         }}
       />
       <BottomTab.Screen
-        name="TabTwo"
-        component={TabTwoNavigator}
+        name="ProfieTab"
+        component={ProfileTabNavigator}
         options={{
+          title: "Profile",
           tabBarIcon: ({color}) => <TabBarIcon name="ios-code" color={color} />,
         }}
       />
@@ -48,32 +59,44 @@ function TabBarIcon(props: {name: React.ComponentProps<typeof Ionicons>["name"];
   return <Ionicons size={30} style={{marginBottom: -3}} {...props} />;
 }
 
-// Each tab has its own navigation stack, you can read more about this pattern here:
-// https://reactnavigation.org/docs/tab-based-navigation#a-stack-navigator-for-each-tab
-const TabOneStack = createStackNavigator<TabOneParamList>();
+const RouteTabStack = createStackNavigator<RouteTabParamList>();
 
-function TabOneNavigator() {
+function RouteTabNavigator() {
   return (
-    <TabOneStack.Navigator>
-      <TabOneStack.Screen
-        name="TabOneScreen"
-        component={TabOneScreen}
-        options={{headerTitle: "Tab One Title"}}
+    <RouteTabStack.Navigator>
+      <RouteTabStack.Screen
+        name="RouteScreen"
+        component={RouteScreen}
+        options={{headerTitle: "My Route"}}
       />
-    </TabOneStack.Navigator>
+    </RouteTabStack.Navigator>
   );
 }
 
-const TabTwoStack = createStackNavigator<TabTwoParamList>();
+const SupportTabStack = createStackNavigator<SupportTabParamList>();
 
-function TabTwoNavigator() {
+function SupportTabNavigator() {
   return (
-    <TabTwoStack.Navigator>
-      <TabTwoStack.Screen
-        name="TabTwoScreen"
-        component={TabTwoScreen}
-        options={{headerTitle: "Tab Two Title"}}
+    <SupportTabStack.Navigator>
+      <SupportTabStack.Screen
+        name="SupportScreen"
+        component={SupportScreen}
+        options={{headerTitle: "Support"}}
       />
-    </TabTwoStack.Navigator>
+    </SupportTabStack.Navigator>
+  );
+}
+
+const ProfileTabStack = createStackNavigator<ProfileTabParamList>();
+
+function ProfileTabNavigator() {
+  return (
+    <ProfileTabStack.Navigator>
+      <ProfileTabStack.Screen
+        name="ProfileScreen"
+        component={ProfileScreen}
+        options={{headerTitle: "Profile"}}
+      />
+    </ProfileTabStack.Navigator>
   );
 }

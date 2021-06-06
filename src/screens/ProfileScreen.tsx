@@ -1,15 +1,26 @@
-import * as React from "react";
+import React, {useContext} from "react";
 import {StyleSheet} from "react-native";
 
-import EditScreenInfo from "../components/EditScreenInfo";
 import {Text, View} from "../components/Themed";
+import Button from "../components/Button";
 
-export default function TabTwoScreen() {
+import firebase from "firebase";
+import {UserContext} from "../context/UserContext";
+
+export default function ProfileScreen() {
+  const [user] = useContext(UserContext);
+
+  const onLogoutPressed = () => {
+    firebase.auth().signOut();
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tab Two</Text>
+      <Text style={styles.title}>User{JSON.stringify(user)}</Text>
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="/screens/TabTwoScreen.tsx" />
+      <Button mode="contained" onPress={onLogoutPressed}>
+        Logout
+      </Button>
     </View>
   );
 }
